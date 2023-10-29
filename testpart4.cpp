@@ -7,10 +7,18 @@ struct TreeNode {
     // Estructura de nodo para el Algoritmo de Huffman
     TreeNode* left;
     TreeNode* right;
+    TreeNode* parent;
     char symbol;
     double probability;
 
     TreeNode(char symbol, double probability) : left(nullptr), right(nullptr), symbol(symbol), probability(probability) {}
+};
+
+struct CompareNodes {
+    bool operator()(const TreeNode* a, const TreeNode* b) const {
+        // Comparar los nodos basados en sus probabilidades (frecuencias)
+        return a->probability > b->probability;
+    }
 };
 
 // Función para cifrar un texto mediante un cifrado de sustitución
@@ -56,8 +64,37 @@ string consultarTextoModificado(TreeNode* raizHuffman, string textoCifrado) {
 // Función para aplicar el Algoritmo de Huffman a un texto
 TreeNode* construirArbolHuffman(string texto, string alfabeto) {
     // Implementa el Algoritmo de Huffman
-    // Aquí debes construir el árbol de Huffman y devolver la raíz del árbol
-    // basado en las frecuencias de los caracteres en el texto.
+    double frecuencias[26] = {0};
+    for (char c : texto) {
+        size_t pos = alfabeto.find(c);
+        if (pos != string::npos) {
+            frecuencias[pos]++;
+        }
+    }
+
+    priority_queue<TreeNode*, vector<TreeNode*>, CompareNodes> pq;
+    for (int i = 0; i < 26; i++) {
+        if (frecuencias[i] > 0) {
+            pq.push(new TreeNode(alfabeto[i], frecuencias[i]));
+        }
+    }
+
+    while (pq.size() > 1) {
+        TreeNode* left = pq.top();
+        pq.pop();
+        TreeNode* right = pq.top();
+        pq.pop();
+
+        TreeNode* parent = new TreeNode('\0', left->probability + right->probability);
+        parent->left = left;
+        parent->right = right;
+        left->parent = parent;
+        right->parent = parent;
+
+        pq.push(parent);
+    }
+
+    return pq.top();
 }
 
 int main() {
@@ -107,11 +144,7 @@ int main() {
 
             case 4:
                 // Implementa la función para consultar el texto modificado almacenado.
-                
-
-                // Utiliza el árbol de Huffman para decodificar si es necesario.
-                
-                break;
+                consultarTextoModificado(raizHuffman, textoCifrado);
 
             case 5:
                 // Limpieza de memoria (liberar nodos del árbol de Huffman si es necesario).
