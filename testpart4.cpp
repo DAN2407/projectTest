@@ -2,7 +2,7 @@
 #include <queue>
 
 using namespace std;
-
+//TODO: Implementar el codigo murcielago a la hora de la sustitucion
 struct TreeNode {
     // Estructura de nodo para el Algoritmo de Huffman
     TreeNode* left;
