@@ -1,5 +1,5 @@
-#ifndef OBJECT_HPP
-#define OBJECT_HPP
+#ifndef FUNCTION_HPP
+#define FUNCTION_HPP
 
 #include <iostream>
 
@@ -104,10 +104,10 @@ void swap(tree* T, tree* smallest){
 void MinHeapify(tree* T){
     tree* smallest = T;
     if(T->left != NULL && T->left->probability < smallest->probability){
-        smallest = T->left;
+        smallest->probability = T->left->probability;
     }
     if(T->right != NULL && T->right->probability < smallest->probability){
-        smallest = T->right;
+        smallest->probability = T->right->probability;
     }
     if(smallest != T){
         swap(T, smallest);
@@ -143,4 +143,4 @@ void showPriorityQueue(tree* T){
 }
 
 
-#endif //OBJECT_HPP
+#endif 
