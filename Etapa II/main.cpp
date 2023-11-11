@@ -25,7 +25,7 @@ int main() {
         insert(root, nodes[i]);
     }
 
-    // Mostrar la cola de prioridad
+    // Mostrar la cola de prioridad, tanto symbol como probability
     show_priority_queue(root);
     
 

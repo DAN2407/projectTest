@@ -78,7 +78,6 @@ void show_post_order(tree *T) {
     }
 }
 
-
 void priority_queue (tree* T, order o){
     if(o == IN){
         show_in_order(T);
@@ -90,14 +89,10 @@ void priority_queue (tree* T, order o){
 }
 
 void show_priority_queue(tree* T){
-    priority_queue(T, IN);
-    std::cout << std::endl;
     priority_queue(T, PRE);
     std::cout << std::endl;
-    priority_queue(T, POST);
-    std::cout << std::endl;
 }
-
+//crear priority queue (montículo de mínimo)
 void create_priority_queue(char symbol[], double probabilities[]) {
     // Crear nodos para cada símbolo del alfabeto latino junto con sus probabilidades
     tree *nodes[26];
@@ -110,6 +105,44 @@ void create_priority_queue(char symbol[], double probabilities[]) {
         insert(root, nodes[i]);
     }
 }
+
+//crear Min Heap
+void min_heapify(tree* T){
+    if(!is_empty(T)){
+        if(T->left != NULL){
+            if(T->probability > T->left->probability){
+                tree* aux = T->left;
+                T->left = T;
+                T = aux;
+            }
+        }
+        if(T->right != NULL){
+            if(T->probability > T->right->probability){
+                tree* aux = T->right;
+                T->right = T;
+                T = aux;
+            }
+        }
+        min_heapify(T->left);
+        min_heapify(T->right);
+    }
+}
+
+void create_min_heap(char symbol[], double probabilities[]){
+    // Crear nodos para cada símbolo del alfabeto latino junto con sus probabilidades
+    tree *nodes[26];
+    for (int i = 0; i < 26; i++) {
+        nodes[i] = create_node(symbol[i], probabilities[i]);
+    }
+
+    // Insertar los nodos en la cola de prioridad
+    for (int i = 0; i < 26; i++) {
+        insert(root, nodes[i]);
+    }
+    min_heapify(root);
+}
+
+
 
 //MIN Heapisize
 //creando swap
