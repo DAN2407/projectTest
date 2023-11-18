@@ -1,5 +1,6 @@
 #include "function.hpp"
 #include <iostream>
+using namespace std;
 
 int main() {
     char symbols[] = "abcdefghijklmnopqrstuvwxyz";
@@ -17,15 +18,14 @@ int main() {
         minHeap.insert(newNode);
     }
 
-    // print the symbols and probabilities
-    std::cout << "Symbols and probabilities:" << std::endl;
+    //mostrar priority queue
+    cout << "Priority Queue:" << std::endl;
     for (int i = 0; i < numSymbols; ++i) {
-        std::cout << minHeap.extractMin()->symbol << " ";
-        std::cout << minHeap.extractMin()->probability << " ";
+        cout << minHeap.extractMin()->symbol << " ";
+        cout << minHeap.extractMin()->probability << " ";
     }
-    std::cout << std::endl;
 
-    //
+
     
 
     return 0;

@@ -19,20 +19,20 @@ struct PriorityQueueNode {
 
 // Minimum Heap (Priority Queue)
 class MinHeap {
-    private:
-        PriorityQueueNode** heapArray;
-        int capacity;
-        int size;
+private:
+    PriorityQueueNode** heapArray;
+    int capacity;
+    int size;
 
-        void heapify(int index);
+    void heapify(int index);
 
-    public:
-        MinHeap(int capacity);
-        ~MinHeap();
+public:
+    MinHeap(int capacity);
+    ~MinHeap();
 
-        void insert(TreeNode* treeNode);
-        TreeNode* extractMin();
-        bool isEmpty();
+    void insert(TreeNode* treeNode);
+    TreeNode* extractMin();
+    bool isEmpty();
 };
 // Implementation of TreeNode
 TreeNode::TreeNode(char symbol, double probability)

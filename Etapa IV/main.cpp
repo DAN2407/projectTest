@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <queue>
+using namespace std;
 
 // Estructura para comparar nodos basándose en sus probabilidades
 struct CompareNodes {
@@ -44,7 +45,7 @@ TreeNode* buildHuffmanTree(const char* symbols, const double* probabilities, int
 }
 
 // Función para asignar códigos binarios a los símbolos basándose en el árbol de Huffman
-void assignHuffmanCodes(TreeNode* root, std::unordered_map<char, std::string>& huffmanCodes, std::string currentCode = "") {
+void assignHuffmanCodes(TreeNode* root, unordered_map<char, string>& huffmanCodes, string currentCode = "") {
     if (root) {
         if (root->symbol != '\0') {
             huffmanCodes[root->symbol] = currentCode;
@@ -66,13 +67,13 @@ int main() {
     TreeNode* huffmanRoot = buildHuffmanTree(symbols, probabilities, numSymbols);
 
     // Asignar códigos de Huffman a los símbolos
-    std::unordered_map<char, std::string> huffmanCodes;
+    unordered_map<char, string> huffmanCodes;
     assignHuffmanCodes(huffmanRoot, huffmanCodes);
 
     // Mostrar los códigos de Huffman asignados a cada símbolo
-    std::cout << "Codigos de Huffman:\n";
+    cout << "Codigos de Huffman:\n";
     for (const auto& pair : huffmanCodes) {
-        std::cout << pair.first << ": " << pair.second << "\n";
+        cout << pair.first << ": " << pair.second << "\n";
     }
 
     // Limpiar la memoria
