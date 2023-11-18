@@ -1,150 +1,108 @@
-#ifndef FUNCTION_HPP
-#define FUNCTION_HPP
-
 #include <iostream>
-
-enum order {IN,PRE,POST};
-
-typedef struct node {
+// Binary Tree Node
+struct TreeNode {
+    TreeNode* parent;
+    TreeNode* left;
+    TreeNode* right;
     char symbol;
     double probability;
-    struct node *left;
-    struct node *right;
-    struct node *parent;
 
-} tree;
+    TreeNode(char symbol, double probability);
+};
 
-tree* root = NULL;
+// Priority Queue Node
+struct PriorityQueueNode {
+    TreeNode* treeNode;
 
-bool is_empty(tree *T) {
-    return T == NULL;
+    PriorityQueueNode(TreeNode* treeNode);
+};
+
+// Minimum Heap (Priority Queue)
+class MinHeap {
+private:
+    PriorityQueueNode** heapArray;
+    int capacity;
+    int size;
+
+    void heapify(int index);
+
+public:
+    MinHeap(int capacity);
+    ~MinHeap();
+
+    void insert(TreeNode* treeNode);
+    TreeNode* extractMin();
+    bool isEmpty();
+};
+// Implementation of TreeNode
+TreeNode::TreeNode(char symbol, double probability)
+    : parent(nullptr), left(nullptr), right(nullptr), symbol(symbol), probability(probability) {}
+
+// Implementation of PriorityQueueNode
+PriorityQueueNode::PriorityQueueNode(TreeNode* treeNode) : treeNode(treeNode) {}
+
+// Implementation of MinHeap
+MinHeap::MinHeap(int capacity) : capacity(capacity), size(0) {
+    heapArray = new PriorityQueueNode*[capacity];
 }
 
-tree *create_node(char symbol, double probability) {
-    tree *new_node = new tree;
-    new_node->symbol = symbol;
-    new_node->probability = probability;
-    new_node->left = NULL;
-    new_node->right = NULL;
-    new_node->parent = NULL;
-    return new_node;
+MinHeap::~MinHeap() {
+    delete[] heapArray;
 }
 
-void insert_aux(tree* T, tree* new_node) {
-    if (T->probability > new_node->probability) {
-        if (T->left == NULL) {
-            T->left = new_node;
-        } else {
-            insert_aux(T->left, new_node);
-        }
-    } else {
-        if (T->right == NULL) {
-            T->right = new_node;
-        } else {
-            insert_aux(T->right, new_node);
-        }
+void MinHeap::heapify(int index) {
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heapArray[left]->treeNode->probability < heapArray[smallest]->treeNode->probability)
+        smallest = left;
+
+    if (right < size && heapArray[right]->treeNode->probability < heapArray[smallest]->treeNode->probability)
+        smallest = right;
+
+    if (smallest != index) {
+        std::swap(heapArray[index], heapArray[smallest]);
+        heapify(smallest);
     }
 }
 
-void insert (tree* T, tree* new_node) {
-    if (is_empty(T)) {
-        root = new_node;
-    } else {
-        insert_aux(T, new_node);
+void MinHeap::insert(TreeNode* treeNode) {
+    if (size == capacity) {
+        std::cerr << "Heap is full. Cannot insert more elements.\n";
+        return;
     }
+
+    PriorityQueueNode* newNode = new PriorityQueueNode(treeNode);
+    heapArray[size] = newNode;
+
+    int currentIndex = size;
+    int parentIndex = (currentIndex - 1) / 2;
+
+    while (currentIndex > 0 && heapArray[currentIndex]->treeNode->probability < heapArray[parentIndex]->treeNode->probability) {
+        std::swap(heapArray[currentIndex], heapArray[parentIndex]);
+        currentIndex = parentIndex;
+        parentIndex = (currentIndex - 1) / 2;
+    }
+
+    size++;
 }
 
-void show_pre_order(tree *T) {
-    if (!is_empty(T)) {
-        std::cout << T->symbol << " ";
-        show_pre_order(T->left);
-        show_pre_order(T->right);
+TreeNode* MinHeap::extractMin() {
+    if (isEmpty()) {
+        std::cerr << "Heap is empty. Cannot extract minimum element.\n";
+        return nullptr;
     }
+
+    TreeNode* minNode = heapArray[0]->treeNode;
+    heapArray[0] = heapArray[size - 1];
+    size--;
+
+    heapify(0);
+
+    return minNode;
 }
 
-void show_in_order(tree *T) {
-    if (!is_empty(T)) {
-        show_in_order(T->left);
-        std::cout << T->symbol << " ";
-        show_in_order(T->right);
-    }
+bool MinHeap::isEmpty() {
+    return size == 0;
 }
-
-void show_post_order(tree *T) {
-    if (!is_empty(T)) {
-        show_post_order(T->left);
-        show_post_order(T->right);
-        std::cout << T->symbol << " ";
-    }
-}
-
-void priority_queue (tree* T, order o){
-    if(o == IN){
-        show_in_order(T);
-    }else if(o == PRE){
-        show_pre_order(T);
-    }else if(o == POST){
-        show_post_order(T);
-    }
-}
-
-void show_priority_queue(tree* T){
-    priority_queue(T, PRE);
-    std::cout << std::endl;
-}
-//crear priority queue (montículo de mínimo)
-void create_priority_queue(char symbol[], double probabilities[]) {
-    // Crear nodos para cada símbolo del alfabeto latino junto con sus probabilidades
-    tree *nodes[26];
-    for (int i = 0; i < 26; i++) {
-        nodes[i] = create_node(symbol[i], probabilities[i]);
-    }
-
-    // Insertar los nodos en la cola de prioridad
-    for (int i = 0; i < 26; i++) {
-        insert(root, nodes[i]);
-    }
-}
-
-//crear Min Heap
-void min_heapify(tree* T){
-    if(!is_empty(T)){
-        if(T->left != NULL){
-            if(T->probability > T->left->probability){
-                tree* aux = T->left;
-                T->left = T;
-                T = aux;
-            }
-        }
-        if(T->right != NULL){
-            if(T->probability > T->right->probability){
-                tree* aux = T->right;
-                T->right = T;
-                T = aux;
-            }
-        }
-        min_heapify(T->left);
-        min_heapify(T->right);
-    }
-}
-
-void create_min_heap(char symbol[], double probabilities[]){
-    // Crear nodos para cada símbolo del alfabeto latino junto con sus probabilidades
-    tree *nodes[26];
-    for (int i = 0; i < 26; i++) {
-        nodes[i] = create_node(symbol[i], probabilities[i]);
-    }
-
-    // Insertar los nodos en la cola de prioridad
-    for (int i = 0; i < 26; i++) {
-        insert(root, nodes[i]);
-    }
-    min_heapify(root);
-}
-
-
-
-//MIN Heapisize
-//creando swap
-
-#endif 
